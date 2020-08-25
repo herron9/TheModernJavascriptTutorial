@@ -1,2 +1,2 @@
-# TheModernJavascriptTutorial
-JavaScript.info Learning Notebook 
+# TheModernJavaScriptTutorial
+[The Modern JavaScript Tutorial](https://javascript.info/) Learning Notebook 
