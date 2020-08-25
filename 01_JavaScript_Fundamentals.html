@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Fundamentals</title>
+</head>
+<body>
+  <script>
+
+  	//  ========== Data Types ==========
+
+	// BigInt: the "n" at the end means it's a BigInt
+	const bigInt = 1234567890123456789012345678901234567890n;
+
+	// typeof
+	console.log(typeof Math);    	// object
+	console.log(typeof bigInt); 	// bigint
+	console.log(typeof alert); 	    // function
+	console.log(typeof(true));		// boolean
+
+
+  	//  ========== Interaction ==========
+	// prompt
+	// It shows a modal window with a text message, an input field for the visitor, and the buttons OK/Cancel.
+	const result = prompt("Hello", "Default Input");
+
+	// confirm
+	const c = confirm("DO U UNDERSTAND");
+
+	// ========== Type Conversions ==========
+	const booleanToString = String(true);
+	console.log(typeof booleanToString);
+	
+	const stringToInt = Number("123");
+	console.log(typeof stringToInt, stringToInt);	
+
+	const stringToBoolean = Boolean("Hello");
+	console.log(typeof stringToBoolean, stringToBoolean);
+
+	// null becomes 0 after the numeric conversion.
+	// undefined becomes NaN after the numeric conversion.
+
+	// ========== Basic operators and Maths ==========
+	// Exponentiation **
+	console.log("2^3 = ", 2 ** 3);
+
+	// ========== Logic operators ==========
+
+	// A double NOT !! is sometimes used for converting a value to boolean type:
+	alert( !!"non-empty string" ); // true
+	alert( !!null ); // false
+
+	// The precedence of NOT ! is the highest of all logical operators, so it always executes first, before && or ||.
+
+
+	// ========== Nullish coalescing operator '??' ==========
+	// Due to safety reasons, it’s forbidden to use ?? together with && and || operators.
+
+	// ========== Loops: while and for ==========
+	// break <labelName>
+
+	outer:
+	for (let i = 0; i <= 2; i++) {
+		for(let j = 0; j <= 2; j++) {
+			if (j === 1) {
+				break outer; // break out of both loop!
+			}
+			console.log(i, j); // Output is 0 0
+		}
+	}
+
+	console.log('break!');
+
+	// Output even numbers in the loop from 2 to 10
+	for(let i = 2; i <= 10; i++) {
+		if (i % 2 === 0) {
+			console.log(i); 
+		}
+	}
+
+	// Replace "for" with "while"
+	let i = 0;
+	while(i < 3) {
+		alert( `number ${i}!` );
+		i++;
+	}
+
+	// Repeat until the input is correct  > 100)
+	let number = prompt("Give me a number");
+	while(number <= 100) {
+		number = prompt("Give me a number");
+	}
+	console.log(`This number ${number} is greater than 100!`);
+
+	// Output prime numbers
+	let number = prompt("Give me a number greater than 2");
+	let i = 2;
+	let result = [];
+	while(i <= number) {
+		if (isPrime(i)) {
+			result.push(i);
+		}
+		i++;
+	}
+	console.log(result);
+	// Also, it's sufficient to check the numbers [2, sqrt(n)].
+	function isPrime(number) {
+		let q = parseInt(Math.sqrt(number));
+		for(let i = 2; i <= q; i ++) {
+			if (number % i == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// ========== Functions ==========
+
+	// Rewrite the function using '?' or '||'
+	// `?`
+	function checkAge(age) {
+		return age > 18 ? true : confirm('Did parents allow you?');
+	}
+
+	// `||`
+	function checkAge2(age) {
+		return age > 18 || confirm('Did parents allow you?');
+	}
+
+	// Function min(a, b)
+	function min(a, b) {
+		return a > b ? b : a;
+	}
+	// Function pow(x,n)
+	function pow(x,n) {
+		return x**n;
+	}
+
+	// ========== Function expressions ==========
+
+	// In JavaScript, a function is a value, so we can deal with it as a value. 
+
+	// ========== Arrow functions, the basics ==========
+
+	// Rewrite with arrow functions
+	let ask = (question, yes, no) => (confirm(question) ? yes() : no());
+
+	ask("Do you agree?", () => alert("You agreed."), () => alert("You canceled the execution."));
+
+	// ========== JavaScript specials ==========
+
+  </script>
+</body>
+</html>
