@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Objects: the basics</title>
+</head>
+<body>
+  <script>
+
+  	//  ======================================== Objects ========================================
+
+  	// Property value shorthand
+  	function makeUser(name, age) {
+  		return {
+  			name,
+  			age,
+  		};
+  	}
+
+  	// There’s a minor gotcha with a special property named __proto__. 
+  	// We can’t set it to a non-object value
+
+
+  	// 'in' test
+  	let user = makeUser("A", "10");
+  	console.log( "name" in user, "gender" in user);
+
+  	// The “for…in” loop
+  	for (key in user) {
+  		console.log(key, user[key]);
+  	}
+
+
+  	// The “integer property” term here
+  	// means a string that can be converted to-and-from an integer without a change.
+
+  	// Check for emptiness
+  	// Write the function isEmpty(obj) which returns true if the object has no properties, false otherwise.
+
+  	function isEmpty(object) {
+  		for (key in object) {
+  			if (key) return false;  // Or just 'return false', if the loop has started, there is a property
+  		}
+  		return true;
+  	}
+
+  	console.log(isEmpty(user), isEmpty({}), isEmpty(new Object()));
+
+  	// Sum object properties
+  	function countSalaries(object) {
+  		let sum = 0;
+  		for (key in object) {
+  			sum += object[key];
+  		}
+
+  		return sum;
+  	}
+
+  	let salaries = {
+		John: 100,
+		Ann: 160,
+		Pete: 130
+	}
+
+	console.log(countSalaries(salaries), countSalaries(new Object())); // 390 0
+
+	// Multiply numeric properties by 2
+
+	function multiplyNumber(object) {
+		for (key in object) {
+			if (typeof object[key] === "number") {
+				object[key] = object[key] * 2;
+			}
+		}
+	}
+
+	let menu = {
+		width: 200,
+		height: 300,
+		title: "My menu"
+	};
+	multiplyNumber(menu)
+
+	console.log(menu);
+
+	// ======================================== Object copying, references ========================================
+
+	// Two objects are equal only if they are the same object.
+
+	// ======================================== Garbage collection ========================================	
+
+	// Outgoing references do not matter. Only incoming ones can make an object reachable. 
+
+	// ======================================== Object methods, "this" ========================================
+
+
+	// A function that is the property of an object is called its method.
+
+	// Method shorthand
+	user = {
+		sayHi() { // SayHi() use shorter syntax
+			console.log("Hello");
+		}
+	}
+
+	user.sayHi();
+
+	// Use 'this'
+	let cat = {
+		name: 'KillerQueen',
+		sayHi() {
+			console.log(this.name + " says Hi");
+		}
+	}
+
+	cat.sayHi();
+
+	// In JavaScript, keyword this behaves unlike most other programming languages. It can be used in any function.
+	// In JavaScript 'this' is “free”, its value is evaluated at call-time and does not depend on where the method was declared, but rather on what object is “before the dot”.
+
+	// Arrow functions are special: they don’t have their “own” this. 
+	// If we reference this from such a function, it’s taken from the outer “normal” function.
+
+	// Create a calculator
+	let calculator = {
+		x: 0, // can omit
+		y: 0, // can omit
+		read() {
+			this.x = +prompt("First number", 0);
+			this.y = +prompt("Second number", 0);
+		},
+		sum() {
+			return this.x + this.y;
+		},
+		mul() {
+			return this.x * this.y;
+		}
+	}
+
+	calculator.read();
+	console.log(calculator.sum(), calculator.mul());
+
+	// Chaining, Modify the code of up, down and showStep to make the calls chainable
+	let ladder = {
+	  step: 0,
+	  up() {
+	    this.step++;
+	    return this;
+
+	  },
+	  down() {
+	    this.step--;
+	    return this;
+	  },
+	  showStep: function() { // shows the current step
+	    console.log( this.step );
+	    return this;
+	  }
+	};
+
+	ladder.up().up().up().down().showStep(); // 2
+
+	// ======================================== Constructor, operator "new" ========================================
+
+	// Create new Calculator
+	function Calculator() {
+		this.read = function() {
+			this.x = +prompt("First number", 0);
+			this.y = +prompt("Second number", 0);
+		},
+		this.sum = function() {
+			return this.x + this.y;
+		},
+		this.mul = function() {
+			return this.x * this.y;
+		}
+	}
+
+	let newCalculator = new Calculator();
+	newCalculator.read();
+	console.log(newCalculator.sum(), newCalculator.mul());
+
+	// Create new Accumulator
+	function Accumulator(startingValue) {
+		this.value = startingValue;
+		this.read = function() {
+			let accumulate = +prompt("Give me a number", 0);
+			this.value += accumulate;
+		}
+	}
+
+	let accumulator = new Accumulator(1);
+	accumulator.read();
+	accumulator.read();
+
+	console.log(accumulator.value);
+
+	// ======================================== Optional chaining '?.' ========================================
+
+	// The optional chaining ?. is not an operator, but a special syntax construct, 
+	// that also works with functions and square brackets.
+
+	// ?.() is used to call a function that may not exist.
+	
+	//	obj?.prop – returns obj.prop if obj exists, otherwise undefined.
+	//	obj?.[prop] – returns obj[prop] if obj exists, otherwise undefined.
+	//	obj?.method() – calls obj.method() if obj exists, otherwise returns undefined.
+
+	// ======================================== Symbol type ========================================
+
+	// By specification, object property keys may be either of string type, or of symbol type. 
+	// A “symbol” represents a unique identifier. To create one:
+	let id = Symbol();
+	let id1 = Symbol("id"); // symbol with description, also called a symbol name
+
+
+	// Symbols are guaranteed to be unique. Even if we create many symbols with the same description, 
+	// they are different values. The description is just a label that doesn’t affect anything.
+
+	let id2 = Symbol("id");
+	console.log(id1 == id2); // false
+
+	console.log(id2.toString()); // Symbol(id), Not auto-converted, need to use toString();
+	console.log(id2.description); // id
+
+
+	// Symbols allow us to create “hidden” properties of an object, 
+	// that no other part of code can accidentally access or overwrite.
+
+	// Global symbols
+	// read from the global registry
+	let id_global = Symbol.for("id"); // if the symbol did not exist, it is created
+
+	// ======================================== Object to primitive conversion ========================================
+	
+	// In the absence of Symbol.toPrimitive and valueOf, toString will handle all primitive conversions.
+
+	// In practice, it’s often enough to implement only obj.toString() as a “catch-all” method for all conversions 
+	// that return a “human-readable” representation of an object, for logging or debugging purposes.
+
+
+
+
+
+
+
+
+
+  </script>
+</body>
+</html>
