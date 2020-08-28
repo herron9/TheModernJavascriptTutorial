@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data types</title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ======================================== Methods of primitives ========================================
+
+  	// Constructors String/Number/Boolean are for internal use only.
+  	// Syntax like new Number(1) or new Boolean(false) is possible for historical reasons, but highly unrecommended. 
+  	// Things will go crazy in several places.
+
+  	// On the other hand, using the same functions String/Number/Boolean without new is a totally sane and useful thing.
+  	// They convert a value to the corresponding type: to a string, a number, or a boolean (primitive).
+
+  	let num = Number("123"); // convert a string to number
+
+  	// ======================================== Numbers ========================================
+
+  	console.log( 123456..toString(36) ); // 2n9c, convert a number to 36 base value.
+
+  	// Please note that two dots in 123456..toString(36) is not a typo. 
+  	// If we want to call a method directly on a number, like toString in the example above, 
+  	// then we need to place two dots .. after it.
+
+  	//  or use parentheses
+  	console.log( (123456).toString(36) );
+
+  	// isNaN(value) converts its argument to a number and then tests it for being NaN
+  	console.log(isNaN(12), isNaN("12"), isNaN("value")); // F F T
+  	// The value NaN is unique in that it does not equal anything, including itself:
+  	console.log(NaN === NaN); // F 
+  	// isFinite(value) converts its argument to a number and returns true if it’s a regular number, 
+  	// not NaN/Infinity/-Infinity:
+  	console.log(isFinite(15), isFinite("15"), isFinite(NaN), isFinite(Infinity), isFinite(true)); // T T F F T
+
+  	// Please note that an empty or a space-only string is treated as 0 in all numeric functions including isFinite.
+  	console.log(isFinite(""), isFinite(" ")); // T T
+
+  	// TASKs
+  	// Sum numbers from the visitor
+  	function sumNumber() {
+  		let x = +prompt("Number1", 0);
+  		let y = +prompt("Number2", 0);
+  		console.log( "Sum = " + (x + y) );
+
+  	}
+
+  	sumNumber();
+
+  	// Repeat until the input is a number
+  	function checkNumber() {
+  		while(true) {
+  			let num = prompt("Number");
+  			if (!num || num === '') { // null check
+  				return null;
+  			} else if (!isNaN(Number(num))) { // Or use isFinite(num) here
+  				return Number(num);
+  			}
+
+  		}
+  	}
+  	console.log( checkNumber() );
+
+  	// A random number from min to max
+  	function random(min, max) {
+  		return Math.random() * (max - min) + min;
+  	}
+  	console.log(random(1, 5), random(2, 3), random(3, 5));
+
+  	// A random integer from min to max
+  	function randomIntWrong(min, max) {
+  		return Math.round(Math.random() * (max - min) + min);  // WRONG!  
+  		// The probability to get edge values min and max is two times less than any other.
+  	}
+
+
+  	function randomInt(min, max) {
+  		return Math.floor(Math.random() * (max + 1 - min) + min); 
+  		// Use floor so that possibility of each result is equal.
+  	}
+  	console.log(randomInt(1, 5), randomInt(2, 3), randomInt(6, 8));
+
+  	// ======================================== Strings ========================================
+
+  	// Another advantage of using backticks is that they allow a string to span multiple lines:
+  	let guestList = `Guests:
+	 * John
+	 * Pete
+	 * Mary
+	`;
+
+	// Unicode
+	console.log("\u{1F60D}"); // A smiling face
+
+	// iterate over characters using for..of:
+	for (let char of "Hello") {
+		console.log(char);
+	}
+
+	// TASKs
+	// Uppercase the first character
+	function ucFirst(word) {
+		if (word) {
+			word = word[0].toUpperCase() + word.slice(1);
+		}
+		return word;
+	}
+
+	console.log(ucFirst("word"), ucFirst("hello"), ucFirst("a"), ucFirst(""));
+
+	// Check for spam
+	function checkSpam(str) {
+		let upperCase = str.toUpperCase();
+		const spam1 = "VIAGRA";
+		const spam2 = "XXX";
+		if (upperCase.includes(spam1) || upperCase.includes(spam2)) {
+			return true;
+		}
+		return false;
+	}
+
+	console.log(checkSpam("yes viaGra hello"), checkSpam("free xxxxxx"), checkSpam("innocent rabbit xx"), checkSpam(""));
+
+	// Truncate the text
+	function truncate(str, maxLength) {
+		let result = str.substring(0, maxLength - 1);  
+		return result != str ? result + "…" : result;
+	}
+
+	console.log(
+		truncate("What I'd like to tell on this topic is:", 20), 
+		truncate("Hi everyone!", 20), truncate("Hello", 0));
+
+	// Extract the money
+	function extractCurrencyValue(str) {
+		let index = str.indexOf("$");
+		return index != -1 ? str.slice(index + 1) : "";
+	}
+
+	console.log(extractCurrencyValue("$120"), extractCurrencyValue("160"), extractCurrencyValue(""));
+
+	// ======================================== Arrays ========================================
+
+	// for..of loop
+	let fruits = ["Apple", "Orange", "Plum"];
+
+	// iterates over array elements
+	for (let fruit of fruits) {
+	  console.log( fruit );
+	}
+
+	// for..in loop will work as well, but you should not use this form.
+	for (let key in fruits) {
+	  console.log( fruits[key] );
+	}
+
+	// TASKs
+	// Array operations.
+	let styles = ["Jazz", "Blues"];
+	console.log(styles);
+
+	styles.push("Rock-n-Roll");
+	console.log(styles);
+
+	function findMiddle(array) {
+		if (array.length % 2 != 0) {
+			return Math.floor(array.length / 2);
+		}
+		return 0;
+	}
+	styles[findMiddle(styles)] = "Classic";
+	console.log(styles);
+
+	let removed = styles.shift();
+	console.log(styles);
+
+	styles.unshift("Rap", "Reggae");
+	console.log(styles);
+
+	// Sum input numbers
+	function sumInput() {
+		let sum = 0;
+		while(true) {
+			let num = prompt("number");
+			//  user enters a non-numeric value, an empty string, or presses “Cancel”.
+			if (isNaN(num) || num == "" || !num) {
+				break;
+			}
+			sum += +num;
+		}
+		return sum;
+	}
+
+	console.log(sumInput());
+
+	// A maximal subarray
+	// O(n) solution
+	function getMaxSubSum(arr) {
+		let sum = 0;
+		let max = 0;
+		for (let num of arr) {
+			sum += num;
+			if (sum >= 0) {
+				max = max > sum ? max : sum;
+			} else {
+				sum = 0;
+				// discard sum if sum < 0;
+			}
+		}
+		return max;
+	}
+
+	const test1 = [-1, 2, 3, -9];
+	const test2 = [2, -1, 2, 3, -9];
+	const test3 = [-1, 2, 3, -9, 11];
+	const test4 = [-2, -1, 1, 2];
+	const test5 = [100, -9, 2, -3, 5];
+	const test6 = [1, 2, 3];
+	const test7 = [-1, -2, -3];
+
+	console.log(
+		getMaxSubSum(test1), 
+		getMaxSubSum(test2),
+		getMaxSubSum(test3),
+		getMaxSubSum(test4),
+		getMaxSubSum(test5),
+		getMaxSubSum(test6),
+		getMaxSubSum(test7)
+		);
+
+	// ======================================== Array methods ========================================
+
+	// TASKs
+	// Translate border-left-width to borderLeftWidth
+	function camelize(str) {
+		const arr = str.split("-");
+
+		for (let i = 1; i < arr.length; i++ ) {
+			// has - at first position
+			if (i == 0 && str.indexOf("-") == 0) {
+				arr[i] = arr[i][0].toUpperCase() + arr[i].slice(1);
+			}
+			arr[i] = arr[i][0].toUpperCase() + arr[i].slice(1);	
+		}
+
+		return arr.join("");
+	}
+
+	console.log(camelize("background-color"), camelize("list-style-image"), camelize("-webkit-transition"));
+
+	// Filter range
+	function filterRange(arr, a, b) {
+		return arr.filter(num => num >= a && num <= b);
+	}
+
+	let arr = [5, 3, 8, 1];
+	console.log(filterRange(arr, 1, 4), arr);
+
+	// Filter range "in place"
+	function filterRangeInPlace(arr, a, b) {
+		arr.forEach((num, index, arr) => {
+			if (num < a || num > b) {
+				arr.splice(index, 1);
+			}
+		})
+	}
+ 	filterRangeInPlace(arr, 1, 4);
+	console.log(arr);
+
+	// Sort in decreasing order
+	function sortDecreasing(arr) {
+		return arr.sort((a, b) => b - a);
+	}
+
+	let numArr = [5, 2, 1, -10, 8];
+
+	console.log(sortDecreasing(numArr));
+
+	// Copy and sort array
+	function sortDecreasing2(arr) {
+		let result = arr.slice();
+		return result.sort();
+	}
+	let strArr =["HTML", "JavaScript", "CSS"];
+
+	console.log(sortDecreasing2(strArr), strArr);
+
+	// Create an extendable calculator
+	function Calculator(str) {
+		this.op = ["+", "-"];
+		this.opFunction = [(a, b) => a + b, (a, b) => a - b];
+		this.calculate = function(str) {
+			let arr = str.split(" ");
+			console.log(arr);
+			// return if the string does not meet the requirement
+			if (arr.length < 3 || !isFinite(arr[0]) || !isFinite(arr[2])) return; 
+			const index = this.op.indexOf(arr[1]);
+			if (index != -1) {
+				return this.opFunction[index](+arr[0], +arr[2]);
+			}
+			return;
+		}
+
+		this.addMethod = function(operator, func) {
+			// No duplcate
+			if (this.op.includes(operator)) return;
+			this.op.push(operator);
+			this.opFunction.push(func);
+		}
+	}
+
+	let calc = new Calculator();
+	console.log( calc.calculate("3 + 7") ); // 10
+
+	let powerCalc = new Calculator();
+	powerCalc.addMethod("*", (a, b) => a * b);
+	powerCalc.addMethod("/", (a, b) => a / b);
+	powerCalc.addMethod("**", (a, b) => a ** b);
+
+	console.log(powerCalc.calculate("2 ** 3"), powerCalc.calculate("100 / 25"), powerCalc.calculate("12 * 3"));
+
+
+	// A better solution
+	function NewCalculator() {
+	  this.methods = {
+	    "-": (a, b) => a - b,
+	    "+": (a, b) => a + b
+	  };
+
+	  this.calculate = function(str) {
+
+	    let split = str.split(' '),
+	      a = +split[0],
+	      op = split[1],
+	      b = +split[2];
+
+	    if (!this.methods[op] || isNaN(a) || isNaN(b)) {
+	      return NaN;
+	    }
+
+	    return this.methods[op](a, b);
+	  };
+
+	  this.addMethod = function(name, func) {
+	    this.methods[name] = func;
+	  };
+	}
+
+	// Map to names
+	let john = { name: "John", age: 25 };
+	let pete = { name: "Pete", age: 30 };
+	let mary = { name: "Mary", age: 28 };
+
+	let users = [ john, pete, mary ];
+
+	let names = users.map(user => user.name);
+	console.log(names);
+
+	// Map to objects
+	let john1 = { name: "John", surname: "Smith", id: 1 };
+	let pete1 = { name: "Pete", surname: "Hunt", id: 2 };
+	let mary1 = { name: "Mary", surname: "Key", id: 3 };
+
+	let users1 = [ john1, pete1, mary1 ];
+
+	let usersMapped = users1.map(user => {
+		return {
+			fullName: user.name + " " + user.surname,
+			id: user.id,
+		}
+	})
+
+	/*
+	usersMapped = [
+	  { fullName: "John Smith", id: 1 },
+	  { fullName: "Pete Hunt", id: 2 },
+	  { fullName: "Mary Key", id: 3 }
+	]
+	*/
+
+	console.log( usersMapped )
+	console.log( usersMapped[0].id ) // 1
+	console.log( usersMapped[0].fullName ) // John Smith
+
+	// Sort users by age
+	{
+		function sortByAge(arr) {
+			return arr.sort((a, b) => a.age - b.age);
+		}
+
+		let john = { name: "John", age: 25 };
+		let pete = { name: "Pete", age: 30 };
+		let mary = { name: "Mary", age: 28 };
+
+		let arr = [ pete, john, mary ];
+
+		sortByAge(arr);
+
+		// now: [john, mary, pete]
+		console.log(arr, arr[0].name, arr[1].name, arr[2].name); 
+	}
+
+	// Shuffle an array
+
+	// Get average age
+	{
+		function getAverageAge(arr) {
+			return arr.reduce((total, user) => (total + user.age), 0) / arr.length;
+		}
+
+		let john = { name: "John", age: 25 };
+		let pete = { name: "Pete", age: 30 };
+		let mary = { name: "Mary", age: 29 };
+
+		let arr = [ john, pete, mary ];
+
+		console.log( getAverageAge(arr) ); // (25 + 30 + 29) / 3 = 28
+	}
+
+	// Filter unique array members
+	function unique(arr) {
+		let result = [];
+		arr.forEach(str => {
+			if (!result.includes(str)) {
+				result.push(str);
+			}
+		});
+		return result;
+	}
+
+	let strings = ["Hare", "Krishna", "Hare", "Krishna",
+	  "Krishna", "Krishna", "Hare", "Hare", ":-O"
+	];
+
+	console.log( unique(strings) ); // Hare, Krishna, :-O
+
+	// Create keyed object from array
+	{
+
+		function groupById(users) {
+			const result = users.reduce((group, user) => {
+				group[user.id] = user;
+				return group;
+			}, {});
+		}
+
+		let users = [
+		  {id: 'john', name: "John Smith", age: 20},
+		  {id: 'ann', name: "Ann Smith", age: 24},
+		  {id: 'pete', name: "Pete Peterson", age: 31},
+		];
+
+		let usersById = groupById(users);
+		console.log(usersById);
+
+		/*
+		// after the call we should have:
+
+		usersById = {
+		  john: {id: 'john', name: "John Smith", age: 20},
+		  ann: {id: 'ann', name: "Ann Smith", age: 24},
+		  pete: {id: 'pete', name: "Pete Peterson", age: 31},
+		}
+		*/
+	}
+
+  </script>
+</body>
+</html>
