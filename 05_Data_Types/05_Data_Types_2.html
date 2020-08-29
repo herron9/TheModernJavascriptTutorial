@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data types</title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ======================================== Iterables ========================================
+
+
+  	//  ======================================== Map and Set ========================================
+
+  	// Object.entries: Map from Object
+
+  	// Object.fromEntries: Object from Map
+
+  	// TASKs
+  	// Filter unique array members
+  	function unique(arr) {
+  		let set = new Set(arr);
+  		return Array.from(set);
+  	}
+
+  	let values = ["Hare", "Krishna", "Hare", "Krishna", "Krishna", "Krishna", "Hare", "Hare", ":-O"];
+  	console.log(unique(values));
+
+  	// Filter anagrams
+	{  	
+		function aclean(arr) {
+	  		let set = new Set();
+	  		let result = new Set();
+	  		for (let e of arr) {
+	  			let ordered = e.toLowerCase().split('').sort().join('');
+	  			if (!set.has(ordered)) {
+	  				set.add(ordered);
+	  				result.add(e);
+	  			}
+	  		}
+
+	  		return Array.from(result);
+	  	}
+
+	  	let arr = ["nap", "teachers", "cheaters", "PAN", "ear", "era", "hectares"];
+	  	console.log(aclean(arr));
+
+	  	// Or, just use map
+	  	function aclean2(arr) {
+	  		let map = new Map();
+			for (let e of arr) {
+				let ordered = e.toLowerCase().split('').sort().join('');
+				map.set(ordered, e);
+			}
+			return Array.from(map.values());
+	  	}
+	  	console.log(aclean2(arr));
+
+	  }
+
+	// Iterable keys
+
+	let map = new Map();
+
+	map.set("name", "John");
+
+	let keys = Array.from(map.keys());  // map.keys() returns an iterable, but not an array.
+
+	keys.push("more");
+
+
+	// ======================================== WeakMap and WeakSet ========================================
+
+
+	// TASKs
+	// Store read dates
+	let messages = [
+	  {text: "Hello", from: "John"},
+	  {text: "How goes?", from: "John"},
+	  {text: "See you soon", from: "Alice"}
+	];
+
+	let readMessages = new WeakMap();
+	// When message is read
+	readMessages.set(messages[0], new Date());
+	readMessages.set(messages[1], new Date());
+	readMessages.set(messages[2], new Date());
+
+	console.log("read dates of message 0: " + readMessages.get(messages[0]));
+
+
+	// ======================================== Object.keys, values, entries ========================================
+
+	// TASKs
+	// Sum the properties
+	{
+		let salaries = {
+		  "John": 100,
+		  "Pete": 300,
+		  "Mary": 250
+		};
+
+		function sumSalaries(salaries) {
+			let sum = 0;
+			for (let salary of Object.values(salaries)) {
+				sum += salary;
+			}
+			return sum;
+		}
+
+		console.log(sumSalaries(salaries));
+	}
+
+	// Count properties
+	{
+		let user = {
+		  name: 'John',
+		  age: 30
+		};
+
+		function count(user) {
+			return Object.entries(user).length;
+		}
+
+		console.log(count(user));
+	}
+
+	// ======================================== Destructuring assignment ========================================
+	
+	// TASKs
+	// Destructuring assignment
+	let user = {
+	  name: "John",
+	  years: 30
+	};
+
+	let {name, years: age, isAdmin = false } =  user;
+	console.log(name, age, isAdmin);
+
+	// The maximal salary
+	{
+		let salaries = {
+		  "John": 100,
+		  "Pete": 300,
+		  "Mary": 250
+		};
+
+		function topSalaries(salaries) {
+			let max = 0;
+			let maxName = null;
+			let arr = Object.entries(salaries);
+			for (let [name, salary] of arr) {
+				if (salary > max) {
+					max = salary;
+					maxName = name;
+				}
+			}
+			return maxName;
+		}
+		console.log(topSalaries(salaries));
+	}
+
+  </script>
+</body>
+</html>
