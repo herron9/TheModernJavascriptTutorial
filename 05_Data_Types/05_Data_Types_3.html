@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data types 03 - Date and time</title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ======================================== Date and time ========================================
+
+  	// TASKs
+
+  	// Create a date - Feb 20, 2012, 3:12am, local time
+
+  	const d1 = new Date(Date.parse("2012-02-20T03:12")) ;
+  	console.log(d1);
+  	// Mon Feb 20 2012 03:12:00 GMT-0800 (Pacific Standard Time)
+
+  	//Or
+  	let d2 = new Date("February 20, 2012 03:12:00");
+  	console.log(d2);
+  	// Mon Feb 20 2012 03:12:00 GMT-0800 (Pacific Standard Time)
+
+  	let d3 = new Date("February 20, 2012 03:12:00");
+  	console.log(d3);
+
+  	// Show a weekday
+  	let dateW = new Date(2014, 0, 3);  // 3 Jan 2014
+  	function getWeekDay(date) {
+  		const weekday = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  		return weekday[date.getDay()];
+  	}
+
+  	console.log(getWeekDay(dateW));
+
+  	// European weekday
+  	let dateE = new Date(2012, 0, 3);
+  	function getLocalDay(date) {
+  		let day = date.getDay();
+  		return day == 0 ? 7 : day;
+  	}
+
+  	console.log(getLocalDay(dateE))
+
+  	// Which day of month was many days ago?
+
+  	function getDateAgo(date, days) {
+  		let dateCopy = new Date(date);
+  		dateCopy.setDate(date.getDate() - days);
+  		return dateCopy.getDate();
+  	}
+  	let testDate = new Date(2015, 0, 2);
+  	console.log(getDateAgo(testDate, 1), getDateAgo(testDate, 2), getDateAgo(testDate, 365));
+
+  	// Last day of month?
+  	function getLastDayOfMonth(year, month) {
+  		let date = new Date(year, (month + 1) % 12);
+  		date.setDate(date.getDate() - 1);
+  		return date.getDate();
+  	}
+
+  	console.log(getLastDayOfMonth(2012, 12));
+
+  	// How many seconds have passed today?
+  	function getSecondToday() {
+  		let date = new Date();
+  		let begin = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  		return Math.round((Date.now() - begin) / 1000);
+  	}
+
+  	console.log(getSecondToday());
+
+  	// How many seconds till tomorrow?
+  	function getSecondsToTomorrow() {
+  		let date = new Date();
+  		let tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+  		return Math.round((tomorrow - Date.now()) / 1000);
+  	}
+  	console.log(getSecondsToTomorrow());
+
+  	// Format the relative date
+  	function formatDate(date) {
+  		let passed = (Date.now() - date.getTime()) / 1000;
+  		if (passed <= 1) {
+  			return "right now";
+  		} else if(passed <= 30) {
+  			return passed + " sec. ago";
+  		} else if(passed <= 300) {
+  			return passed + " min. ago";
+  		} else {
+  			return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  		}
+  	}
+
+  	console.log(formatDate(new Date(new Date - 1)));
+  	console.log(formatDate(new Date(new Date - 30 * 1000)));
+  	console.log(formatDate(new Date(new Date - 5 * 60 * 1000)));
+  	console.log(formatDate(new Date(new Date - 86400 * 1000)));
+
+
+  </script>
+</body>
+</html>
