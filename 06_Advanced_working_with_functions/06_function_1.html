@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced working with functions - 01 Recursion and stack </title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ======================================== Recursion and stack ========================================
+
+  	// TASKs
+
+  	// Sum all numbers till the given one
+  	function sumToFor(n) {
+  		let sum = 0;
+  		for ( let i = 1; i <= n; i++) {
+  			sum += i;
+  		}
+  		return sum;
+  	}
+
+  	function sumToRecursion(n) {
+  		return n != 0 ? n + sumToRecursion(n - 1) : 0;
+  	}
+
+  	function sumToMath(n) {
+  		return n * (n + 1) / 2;
+  	}
+
+  	console.log(sumToFor(100), sumToRecursion(100), sumToMath(100));
+
+  	// Calculate factorial
+  	function factorial(n) {
+  		return n != 1 ? n * factorial(n - 1) : 1;
+  	}
+  	console.log(factorial(5));
+
+  	// Fibonacci numbers
+
+  	// This will not work, takes too many duplicate computation
+  	function fib(n) { 
+  		if (n == 0) return 0;
+  		return n != 1 ? fib(n - 1) + fib(n - 2) : 1;
+   	}
+
+   	function fib2(n) {
+   		let n1 = 1;
+   		let n2 = 1;
+   		for (let i = 3; i <= n; i++) {
+   			let temp = n2;
+   			n2 = n1 + n2;
+   			n1 = temp;
+   		}
+   		return n2;
+   	}
+
+   	console.log(fib2(3), fib2(7), fib2(77)); //2,13, 5527939700884757
+
+   	// Output a single-linked list
+
+   	let list = {
+	  value: 1,
+	  next: {
+	    value: 2,
+	    next: {
+	      value: 3,
+	      next: {
+	        value: 4,
+	        next: null
+	      }
+	    }
+	  }
+	};
+
+   	function printListLoop(list) {
+   		while(list.value) {
+   			console.log(list.value);
+   			list = list.next;
+   			if (!list) break;
+   		}
+   	}
+
+   	function printListRec(list) {
+   		console.log(list.value);
+   		if (list.next) {
+   			printListRec(list.next);
+   		}
+   	}
+
+   	printListLoop(list);
+   	printListRec(list);
+
+   	// Output a single-linked list in the reverse order
+
+	function printListLoopRev(list) {	
+		let arr = [];	
+   		while(list.value) {
+   			arr.push(list.value);
+   			list = list.next;
+   			if (!list) break;
+   		}
+
+   		while (arr.length) {
+   			console.log(arr.pop());
+   		}
+   	}
+
+   	function printListRecRev(list) {
+   		if (list.next) {
+   			printListRecRev(list.next);
+   		}
+   		console.log(list.value);
+   	}
+
+   	printListLoopRev(list);
+   	printListRecRev(list);
+
+  </script>
+</body>
+</html>
