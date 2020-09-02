@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced working with functions - 02 </title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ====================================== Rest parameters and spread syntax ======================================
+
+  	// Spread
+  	let arr1 = [1, -2, 3, 4];
+	let arr2 = [8, 3, -8, 1];
+
+	console.log( Math.max(...arr1, ...arr2, 1, 10) ); // 10
+
+	// Get a new copy of an array/object
+	let arr1copy = [...arr1];
+	console.log( arr1copy );
+
+	// Object
+	let obj = { a: 1, b: 2, c: 3 };
+	let objCopy = { ...obj };
+	console.log(JSON.stringify(objCopy));
+
+  	//  ====================================== Variable scope, closure ======================================
+
+  	// TASKs
+  	// Sum with closures
+  	function sum(a) {
+  		return function(b) {
+  			return a + b;
+  		}
+  	}
+
+  	console.log(sum(1)(2), sum(5)(-1));
+
+  	// Filter through function
+  	let arr = [1, 2, 3, 4, 5, 6, 7];
+
+  	function inBetween(a, b) {
+  		return function(item, index, array) { 
+  			return item >= a && item <= b
+  		};
+  	}
+
+  	function inArray(arr) {
+  		return function(item) {
+  			return arr.includes(item);
+  		};
+  	}
+
+  	console.log(arr.filter(inBetween(3, 6)));
+  	console.log(arr.filter(inArray([1, 2, 10])));
+
+  	// Sort by field
+  	let users = [
+	  { name: "John", age: 20, surname: "Johnson" },
+	  { name: "Pete", age: 18, surname: "Peterson" },
+	  { name: "Ann", age: 19, surname: "Hathaway" }
+	];
+
+  	function byField(str) {
+  		return function(a,b) {
+  			return a[str] > b[str] ? 1 : -1;
+  		}
+  	}
+
+  	users.sort(byField('name'));
+  	users.forEach(a => console.log(a));
+	users.sort(byField('age'));
+	users.forEach(a => console.log(a));
+
+	// Army of functions
+
+	function makeArmy() {
+	  let shooters = [];
+
+	  let i = 0;
+	  while (i < 10) {
+	  	let x = i;
+	    let shooter = function() { // shooter function
+	      	console.log( x ); // should show its number
+	    };
+	    shooters.push(shooter);
+	    i++;
+	  }
+
+	  return shooters;
+	}
+
+	let army = makeArmy();
+
+	army[0](); 
+	army[5]();
+
+  </script>
+</body>
+</html>
