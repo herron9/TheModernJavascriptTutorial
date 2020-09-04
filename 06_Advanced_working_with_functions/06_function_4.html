@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced working with functions - 09 </title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ==================================== Decorators and forwarding, call/apply ====================================
+
+  	// TASKs
+  	// Spy decorator
+  	function work(a, b) {
+  		console.log( a + b ); // work is an arbitrary function or method
+	}
+
+  	function spy(func) {
+  		// extend arguments
+  		function wrapper(...args) {
+  			wrapper.calls.push(args);
+  			// func.apply() takes an array
+  			return func.apply(this, args);
+  		}
+
+  		wrapper.calls = [];
+
+  		return wrapper;
+  	}
+
+  	work = spy(work);
+	work(1, 2); // 3
+	work(4, 5); // 9
+
+  	for (let args of work.calls) {
+	  console.log( 'call:' + args.join() ); // "call:1,2", "call:4,5"
+	}
+
+	// Delaying decorator
+	function delay(f, ms) {
+		return function wrapper(args) {
+			setTimeout(f, ms, args);
+		}
+	}
+
+	function f(x) {
+	  console.log(x);
+	}
+
+	// create wrappers
+	let f1000 = delay(f, 1000);
+	let f1500 = delay(f, 1500);
+
+	f1000("test"); // shows "test" after 1000ms
+	f1500("test"); // shows "test" after 1500ms
+
+	// Debounce decorator
+
+	function debounce(f, ms) {
+		// This should be declared outside of returned function
+		let timeoutId;
+		return function() {
+			// Clear least timeoutId if there's one, it's either done (no effect), 
+			// or haven't but we must reset the timeout
+			clearTimeout(timeoutId);
+
+			timeoutId = setTimeout(() => f.apply(this, arguments), ms);
+		}
+	}
+
+	let t = debounce((x) => console.log(x), 1000);
+
+	t("a");
+	setTimeout( () => t("b"), 200);
+	setTimeout( () => t("c"), 500);
+
+	// Throttle decorator
+	function throttle(func, ms) {
+		let isThrottled = false;
+		let savedArgs, savedThis;
+
+		function wrapper() {
+			// if this call should be throttled, just save args and return
+			if (isThrottled) { 
+				savedArgs = arguments;
+				savedThis = this;
+				return;
+			}
+
+			func.apply(this, arguments);
+			// start throttling
+			isThrottled = true;
+
+			setTimeout(function() {
+				// if this scheduled function gets to run(throttling time 1000ms passed), reset throttling flag
+				isThrottled = false;
+
+				// If there's any previous call throttled, schedule it
+				if (savedArgs) {
+					// execute wrapper, becuase we need to set another timeout for next cooldown time.
+					wrapper.apply(savedThis, savedArgs);
+					savedArgs = savedThis = null;
+				}
+
+			}, ms);
+		}
+
+		return wrapper;
+	}
+
+	// 1st => call, 2st => throttled, 3rd => thorrted but run
+
+	let log = "";
+	function func(a) {
+		log += a;
+	}
+
+	let t1000 = throttle(func, 1000);
+
+	t1000("1t"); // run
+	t1000("2t"); // throttled
+	t1000("3t"); // throttled and run
+
+	// console.log(log); // 1
+    setTimeout(() => console.log(log), 1000);// should be 13
+
+  </script>
+</body>
+</html>

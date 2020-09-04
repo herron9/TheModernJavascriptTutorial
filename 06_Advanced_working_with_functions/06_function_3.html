@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced working with functions - 04~08 </title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ====================================== The old "var" ======================================
+  	
+  	//  ====================================== Global object ======================================
+
+  	//  ====================================== Function object, NFE ======================================
+
+  	// TASKs
+
+  	// Set and decrease for counter
+  	function makeCounter() {
+
+  		let count = 0;
+		function counter() {
+			return count++;
+		};
+
+		// Won't work, since count's scope was wrong
+
+		// function set(value) {
+		// 	return counter.count = value;
+		// }
+
+		// function decrease() {
+		// 	return counter.count--;
+		// }
+
+		counter.set = value => count = value;
+		counter.decrease = () => count--;
+
+		return counter;
+	}
+
+	let counter = makeCounter();
+
+	counter.set(10);
+
+	console.log(counter());
+	console.log(counter());
+
+
+	// Sum with an arbitrary amount of brackets
+	function sum(num) {
+		let total = num;
+
+		function f(num2) {
+			total += num2;
+			return f;
+		}
+
+		f.toString = function() {
+			return total;
+		}
+
+		return f;
+	}
+
+	console.log(sum(1)(2) == 3, sum(5)(-1)(2) == 6, sum(6)(-1)(-2)(-3) == 0);
+
+	// ====================================== The "new Function" syntax ======================================
+
+	// ==================================== Scheduling: setTimeout and setInterval ====================================
+
+	// TASKs
+	// Output every second
+
+	// setInterval();
+	function printNumbers(from, to) {
+		let current = from;
+		let invervalId = setInterval(() => {
+			console.log(current);
+			if (current == to) {
+				clearInterval(invervalId);
+				return;
+			}
+			current++;
+		}, 1000);
+	}
+
+	// printNumbers(2, 5);
+
+	// setTimeout();
+	function printNumbersTimeout(from, to) {
+		let timeoutId = setTimeout(function func(from, to) {
+			console.log(from);
+			if (from == to) {
+				clearTimeout(timeoutId);
+			} else {
+				timeoutId = setTimeout(func, 1000, ++from, to);
+			}
+		}, 1000, from, to);
+	}
+
+	// A better and shorter one
+	function printNumbersTimeout2(from, to) {
+		setTimeout(function go() {
+			console.log(from);
+			if (from < to) {
+				setTimeout(go, 1000);
+				from++;
+			}
+		}, 1000);
+	}
+
+	printNumbersTimeout(3, 6);
+
+
+  </script>
+</body>
+</html>
