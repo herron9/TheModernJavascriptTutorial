@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prototypes, inheritance </title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ==================================== Prototypal inheritance ====================================
+
+  	// No matter where the method is found: in an object or its prototype. 
+  	// In a method call, this is always the object before the dot.
+
+
+  	// TASKs
+  	// Searching algorithm
+
+  	let head = {
+	  glasses: 1
+	};
+
+	let table = {
+	  pen: 3,
+	  __proto__: head,
+
+	};
+
+	let bed = {
+	  sheet: 1,
+	  pillow: 2,
+	  __proto__: table,
+	};
+
+	let pockets = {
+	  money: 2000,
+	  __proto__: bed,
+	};
+
+	console.log(pockets.pen, bed.glasses); // 3,1
+
+	function benchmark(func) {
+		let time = Date.now();
+		for(let i = 0; i < 10000; i++) {
+			func();
+		}
+		return Date.now() - time;
+	}
+
+	console.log(benchmark(() => {pockets.glasses;}), benchmark(() => {head.glasses;}) ); // No difference
+
+
+	// Why are both hamsters full?
+
+	let hamster = {
+	  // stomach: [],   // stomach: [] should not be here or each hamster shuold have their own stomach
+
+	  eat(food) {
+	    this.stomach.push(food);
+	  }
+	};
+
+	let speedy = {
+		stomach: [],
+	  __proto__: hamster
+	};
+
+	let lazy = {
+		stomach: [],
+	  __proto__: hamster
+	};
+
+	// This one found the food
+	speedy.eat("apple");
+	console.log( speedy.stomach ); // apple
+
+	// This one also has it, why? fix please.
+	console.log( lazy.stomach ); // apple
+
+
+	// ============================================ F.prototype ============================================
+
+	// TASKs
+	// Create an object with the same constructor
+	function ObjectTest() {
+		this.isObject = true;
+	}
+
+	let obj = new ObjectTest();
+
+	let obj2 = new obj.constructor(); // should work
+
+	ObjectTest.prototype = {}; // directly modify the prototype and make ObjectTest lose default constructor
+
+	let obj3 = new ObjectTest();
+	let obj4 = obj3.constructor(); // shuold not work
+
+	console.log(obj2.isObject, obj4.isObject);
+
+	// ============================================ Native prototypes ============================================
+
+	// Special values null and undefined stand apart. 
+	// They have no object wrappers, so methods and properties are not available for them. 
+	// And there are no corresponding prototypes either.
+
+	// TASKs
+
+	// Add method "f.defer(ms)" to functions
+	function f() {
+	  console.log("Hello!");
+	}
+
+	Function.prototype.defer = function(n) {  // add a function to Function's prototype
+		setTimeout(this, n);
+	}
+
+	f.defer(1000); // shows "Hello!" after 1 second
+
+	// Add the decorating "defer()" to functions
+
+	function f2(a, b) {
+	  console.log( a + b );
+	}
+
+	Function.prototype.defer2 = function(n) {
+		let f = this;
+		// this will not work
+		// function wrapper(a, b) {
+			// setTimeout(f(a,b), n); 
+		// }
+
+		function wrapper(...args) {
+			// we use this in f.apply to make our decoration work for object methods.
+			setTimeout(() => f.apply(this, args), n);
+
+		}
+		// return a function
+		return wrapper;
+	}
+
+	f2.defer2(1000)(1, 2); // shows 3 after 1 second
+
+
+	// ================================ Prototype methods, objects without __proto__ ================================
+
+	// TASKs
+	// Add toString to the dictionary
+	// let dictionary = Object.create(null);
+
+
+	// your code to add dictionary.toString method
+	let dictionary = Object.create(null, {
+		// define toString property, it's the way descriptor works
+		toString: {
+			// the value is a function
+			value() {
+				return Object.keys(this).join();
+			}
+		}
+	});
+
+	// When we create a property using a descriptor, its flags are false by default. 
+	// So in the code above, dictionary.toString is non-enumerable.
+
+	// add some data
+	dictionary.apple = "Apple";
+	dictionary.__proto__ = "test"; // __proto__ is a regular property key here
+
+	// only apple and __proto__ are in the loop
+	for(let key in dictionary) {
+	  console.log(key); // "apple", then "__proto__"
+	}
+
+	// your toString in action
+	console.log(dictionary.toString()); // "apple,__proto__"	
+
+  </script>
+</body>
+</html>
