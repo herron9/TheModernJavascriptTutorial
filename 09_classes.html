@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Classes</title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	//  ==================================== Class basic syntax ====================================
+
+  	// In JavaScript, a class is a kind of function.
+
+  	// The important difference of class fields is that they are set on individual objects, not User.prototype
+	class User {
+	  name = "John";
+	}
+
+	let user = new User();
+	console.log(user.name); // John
+	console.log(User.prototype.name); // undefined
+
+	// "losing this" problem, two approaches to fix it:
+	// 1. Pass a wrapper-function, such as setTimeout(() => button.click(), 1000). (arrow function will pass this in)
+	// 2. Bind the method to object, e.g. in the constructor.
+
+	// Class fields provide another, quite elegant syntax:
+	class Button {
+	  constructor(value) {
+	    this.value = value;
+	  }
+	  // The class field click = () => {...} is created on a per-object basis, 
+	  // there’s a separate function for each Button object, with this inside it referencing that object. 
+	  click = () => {  	  
+	    console.log(this.value);
+	  }
+	}
+
+	let button = new Button("hello");
+
+	setTimeout(button.click, 1000); // hello
+
+
+	// TASKs
+	// Rewrite to class
+
+	class Clock {
+		// In original timer is just a variable and needs to be declared. 
+		// In the solution it is an object property so we can declare it "on the fly"
+		// timer = "";
+
+		constructor({template}) {
+			this.template = template;
+		} 
+
+		render = () => {
+			let date = new Date();
+  
+			let hours = date.getHours();
+			if (hours < 10) hours = '0' + hours;
+
+			let mins = date.getMinutes();
+			if (mins < 10) mins = '0' + mins;
+
+			let secs = date.getSeconds();
+			if (secs < 10) secs = '0' + secs;
+
+			let output = this.template
+			.replace('h', hours)
+			.replace('m', mins)
+			.replace('s', secs);
+
+			console.log(output);
+		}
+
+		stop = () => {
+			clearInterval(this.timer);
+		}
+
+		start = () => {
+			this.render();
+			this.timer = setInterval(this.render, 1000);
+		}
+	}
+
+	let clock = new Clock({template: 'h:m:s'});
+	clock.start();
+	clock.stop();
+
+
+	// ==================================== Class inheritance ====================================
+    
+	// Arrow functions have no super
+
+	// TASKs
+	// Error creating an instance
+
+	class Animal {
+	  constructor(name) {
+	    this.name = name;
+	  }
+
+	}
+
+	class Rabbit extends Animal {
+	  constructor(name) {
+	    super(name);  // fixed by this line
+	    this.created = Date.now();
+	  }
+	}
+
+	let rabbit = new Rabbit("White Rabbit"); // Error: this is not defined
+	console.log(rabbit.name,rabbit.created); 
+
+	// Extended clock
+	class ExtendedClock extends Clock {
+		constructor(options) {
+			super(options);
+			// assign default value precision if not present in options
+			// Object destructuring: https://javascript.info/destructuring-assignment#object-destructuring
+			let {precision = 1000} = options; 
+			this.precision = precision; 
+		}
+	}
+
+	let extendedClock = new ExtendedClock({template: 'h:m:s'});
+	console.log(extendedClock.precision);
+	extendedClock.start();
+	extendedClock.stop();
+
+	// Object destructuring test
+	let options = {
+		x: "hello",
+		y: "world"
+	}
+
+	let {y = "ok", z = "u"} = options;
+
+	console.log(options, options.x, options.y, y, z); // {x: "hello", y: "world"} "hello" "world" "world" "u"
+
+	// ==================================== Static properties and methods ====================================
+
+	// Static methods: something that is not a method of an article, but a method of the whole class.
+	// Static methods are used for the functionality that belongs to the class “as a whole”. It doesn’t relate to a concrete class instance.
+
+	// For example, a method for comparison Article.compare(article1, article2) 
+	// or a factory method Article.createTodays().
+
+	// TASKs
+	// Class extends Object? 
+	{
+		class Rabbit extends Object {
+		  constructor(name) {
+		  	super();  // fixed by this line, need to call the parent constructor when inheriting
+		    this.name = name;
+		  }
+		}
+
+		let rabbit = new Rabbit("Rab");
+
+		console.log( rabbit.hasOwnProperty('name') ); // Error
+
+	}
+
+	// ================================ Private and protected properties and methods ================================
+
+	// To hide an internal interface we use either protected or private properties:
+
+	// Protected fields start with _. That’s a well-known convention, not enforced at the language level. 
+	// Programmers should only access a field starting with _ from its class and classes inheriting from it.
+
+	// Private fields start with #. JavaScript makes sure we can only access those from inside the class.
+
+
+	// ======================================== Extending built-in classes ========================================
+
+	// ======================================== Class checking: "instanceof" ========================================
+
+	// We can use {}.toString.call instead of instanceof for built-in objects when we want to get the type as a string rather than just to check.
+
+	// ================================================ Mixins ================================================
+
+	// a mixin is a class containing methods that can be used by other classes without a need to inherit from it.
+
+  </script>
+</body>
+</html>

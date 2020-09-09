@@ -13,6 +13,24 @@
   	// No matter where the method is found: in an object or its prototype. 
   	// In a method call, this is always the object before the dot.
 
+  	// __proto__ is a historical getter/setter for [[Prototype]],
+  	// __proto__ is an object in every [class instance] that points to [the prototype it was created from]
+  	
+  	// In reality, the only true difference between prototype and __proto__ is that 
+  	// the former is a property of a class constructor, while the latter is a property of a class instance.
+
+  	// When new Object() is called (or a literal object {...} is created), 
+  	// the [[Prototype]] of it is set to Object.prototype according to the rule
+  	class Animal {
+
+	};
+
+	class Rabbit extends Animal {
+
+	};
+
+	let rabbit = new Rabbit();
+	console.log(rabbit.__proto__ === Rabbit.prototype, rabbit.__proto__.__proto__ === Animal.prototype); // true, true
 
   	// TASKs
   	// Searching algorithm
