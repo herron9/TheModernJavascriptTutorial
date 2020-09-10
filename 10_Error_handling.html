@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Error handling</title>
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	// ==================================== Error handling, "try..catch" ====================================
+
+  	// ==================================== Custom errors, extending Error ====================================
+
+  	// TASKs
+  	// Inherit from SyntaxError
+  	class FormatError extends SyntaxError {
+  		constructor(message) {
+  			super(message);
+  			this.name = this.constructor.name;
+  		}
+  	}
+
+  	let err = new FormatError("formatting error");
+
+  	console.log(err.message, err.name, err.stack);
+  	console.log(err instanceof FormatError, err instanceof SyntaxError); // true, true
+
+
+  </script>
+</body>
+</html>
