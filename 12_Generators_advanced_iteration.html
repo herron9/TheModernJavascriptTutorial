@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generators, advanced iteration</title>
+
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	// ============================================ Generators ============================================
+
+    // TASKs
+    // Pseudo-random generator
+    function* pseudoRandom(seed) {
+      while(seed) {
+        let next = seed * 16807 % 2147483647;
+        yield next;
+        seed = next;
+      }
+    }
+
+    let generator = pseudoRandom(1);
+
+    console.log(generator.next().value); // 16807
+    console.log(generator.next().value); // 282475249
+    console.log(generator.next().value); // 1622650073
+
+    // ======================================== Async iteration and generators ========================================
+
+
+  </script>
+</body>
+</html>

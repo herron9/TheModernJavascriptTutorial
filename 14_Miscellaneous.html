@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Miscellaneous</title>
+
+</head>
+<body>
+  <script>
+  	"use strict";
+
+  	// ============================================ Proxy ============================================
+
+    // Syntax
+    // let proxy = new Proxy(target, handler);
+    // handler – proxy configuration: an object with “traps”, methods that intercept operations
+
+    // Validation with “set” trap
+    let numbers = [];
+
+    numbers = new Proxy(numbers, { // (*)
+      set(target, prop, val) { // to intercept property writing
+        if (typeof val == 'number') {
+          console.log(prop, val);  // what's the prop here? The index
+          target[prop] = val;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+
+    numbers.push(1); // added successfully
+    numbers.push(2); // added successfully
+    console.log("Length is: " + numbers.length); // 2
+
+    // numbers.push("test"); // TypeError ('set' on proxy returned false)
+
+    // console.log("This line is never reached (error in the line above)");
+
+
+    // Reflect
+    // Its methods are minimal wrappers around the internal methods
+    // If a trap wants to forward the call to the object, it’s enough to call Reflect.<method> with the same arguments.
+
+    // TASKs
+    // Error on reading non-existent property
+    let user = {
+      name: "John"
+    };
+
+    function wrap(target) {
+      return new Proxy(target, {
+          /* your code */
+          get(target, property) {
+            if (property in target) {
+              return target[property];
+            } else {
+              return new ReferenceError(property + " does not exist.");
+            }
+          }
+
+          // or
+          // get(target, property, receiver) {
+          //   if (property in target) {
+          //     return Reflect.get(target, property, receiver);
+          //   } else {
+          //     throw new ReferenceError(property + " does not exist.");
+          //   }
+          // }
+      });
+    }
+
+    user = wrap(user);
+
+    console.log(user.name); // John
+    console.log(user.age); // ReferenceError: Property doesn't exist "age"
+
+    // Accessing array[-1]
+    let array = [1, 2, 3];
+
+    array = new Proxy(array, {
+      get(target, property, receiver) {
+        /* your code */
+        if (property >= 0) {
+          return Reflect.get(target, property, receiver);
+        } else {
+          let index = target.length + +property;
+          return Reflect.get(target, index, receiver);
+        }
+      }
+    });
+
+    console.log( array[-1] ); // 3
+    console.log( array[-2] ); // 2
+
+
+    // Observable
+    let handlers = Symbol("handlers");
+    function makeObservable(target) {
+      // init handler's store
+      target[handlers] = [];
+
+      // store handler
+      target.observe = function(f) {
+        this[handlers].push(f);
+      }
+
+      return new Proxy(target, {
+        set(target, property, value, receiver) {
+          let success = Reflect.set(...arguments);
+          // if there were no error while setting the property
+          if (success) {
+            // apply each handler
+            target[handlers].forEach(handler => handler(property, value));
+          }
+          return success;
+        }
+      });
+    }
+
+    let userX = {};
+    userX = makeObservable(user);
+
+    userX.observe((key, value) => {
+      console.log(`SET ${key}=${value}`);
+    });
+
+    userX.name = "John"; // alerts: SET name=John
+
+    // ============================================ Eval: run a code string ============================================
+    // Seldom used in modern world
+
+    // TASKs
+    // Eval-calculator
+    function Calculator() {
+      this.calculate = function() {
+        let question = prompt("give me an arithmetic expression", "2+2");
+        return eval(question);
+      }
+    }
+
+    let calculator = new Calculator();
+    console.log(calculator.calculate());
+
+    // ============================================ Currying ============================================
+
+    // Currying is a transformation of functions that 
+    // translates a function from callable as f(a, b, c) into callable as f(a)(b)(c).
+
+    // ============================================ Reference Type （x） ============================================
+    
+    // ============================================ BigInt ============================================
+    
+
+
+  </script>
+</body>
+</html>
